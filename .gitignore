@@ -1,0 +1,17 @@
+# Jupyter Notebook
+*.ipynb
+
+# microsoft word documents
+*.docx
+
+# test files
+test.py
+
+# large file
+images_data.csv
+
+# random image
+captured_image.png
+
+#
+__pycache__/
