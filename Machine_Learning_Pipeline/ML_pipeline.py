@@ -42,23 +42,23 @@ def main():
             ########## Model ##########
             # Create an instance of the SimpleCNN model
             cnn_model = ml_model.SimpleCNN()
-            print('step 6 complete')
             # Define the loss function (cross-entropy loss) for classification tasks
             criterion = nn.CrossEntropyLoss()
-            print('step 7 complete')
             # Define the optimizer (Adam optimizer) for updating the model parameters during training
             optimizer = torch.optim.Adam(cnn_model.parameters(), lr=constant.learning_rate, weight_decay=constant.weight_decay)
-            print('step 8 complete')
+            print('step 6 complete')
 
             ########## Model Training ##########
             # Assuming you've defined device in ML_pipeline.py as well
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             trained_model = training.train_model(cnn_model, train_loader, val_loader, optimizer, device)
-            print('step 9 complete')
+            print('step 7 complete')
 
             ########## model evaluation ##########
-            eval.test_model(trained_model, test_loader, device)
-            print('step 10 complete')
+            acc, ave_loss = eval.test_model(trained_model, test_loader, device)
+            print('step 8 complete')
+            ######### save the trained and evaluated model ##########
+            eval.save_model(acc, trained_model)
 
         except Exception as e:
             print(f"Error occurred: {str(e)}")

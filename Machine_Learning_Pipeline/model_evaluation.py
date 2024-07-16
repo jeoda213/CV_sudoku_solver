@@ -58,19 +58,26 @@ def test_model(model, test_loader, device):
     
     return accuracy, avg_loss
 
+import os
+import torch
+import constant_variables as constant
+
 def save_model(test_accuracy, trained_model):
     # Save the model if accuracy is higher than 98%
     if test_accuracy > 98.0:
-        # Create a directory to save models if it doesn't exist
-        save_dir = 'saved_models'
-        os.makedirs(save_dir, exist_ok=True)
+        # Ensure the directory exists
+        os.makedirs(constant.machine_learning_folder_path, exist_ok=True)
         
         # Generate a filename with the accuracy
-        model_filename = f'sudoku_model_acc_{test_accuracy:.2f}.pth'
-        save_path = os.path.join(save_dir, model_filename)
+        base_name, extension = os.path.splitext(constant.model_name)
+        model_filename = f'{base_name}_acc_{test_accuracy:.2f}{extension}'
+        
+        # Construct the full save path
+        save_path = os.path.join(constant.machine_learning_folder_path, model_filename)
         
         # Save the model
         torch.save(trained_model.state_dict(), save_path)
         print(f"Model saved to {save_path}")
+        print(f"Model accuracy: {test_accuracy:.2f}%")
     else:
-        print("Model not saved. Accuracy below 98%")
+        print(f"Model not saved. Accuracy ({test_accuracy:.2f}%) below 98%")

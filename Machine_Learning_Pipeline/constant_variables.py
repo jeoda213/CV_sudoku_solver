@@ -4,7 +4,7 @@ import os
 original_image_folder_path = '/Users/danieljeong/Python/CV_sudoku_solver/original_training_data'
 csv_data_folder_path ='/Users/danieljeong/Python/CV_sudoku_solver/processed_training_data'
 main_project_folder_path = '/Users/danieljeong/Python/CV_sudoku_solver'
-
+machine_learning_folder_path = '/Users/danieljeong/Python/CV_sudoku_solver/Machine_Learning_Pipeline'
 #file names 
 processed_image_file_name = 'images_data.csv'
 model_name = 'digit_recognition_model.pth'

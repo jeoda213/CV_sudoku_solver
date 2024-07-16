@@ -14,6 +14,7 @@ import Machine_Learning_Pipeline.ML_pipeline
 from Machine_Learning_Pipeline import constant_variables as constant
 from Machine_Learning_Pipeline import ml_model
 import Sudoku_algorithm
+from helper_functions import find_best_model  # Import the function from utils.py
 
 frameWidth = 960
 frameHeight = 720
@@ -30,18 +31,22 @@ cap.set(10, 150)
 
 # load the model with weights
 model = ml_model.SimpleCNN()
-model_path = os.path.join(constant.main_project_folder_path, constant.model_name)
+best_model_path = find_best_model()
+
 try:
-    if os.path.exists(model_path):
-        model.load_state_dict(torch.load(model_path))
-        print('Model loaded successfully.')
+    if best_model_path and os.path.exists(best_model_path):
+        model.load_state_dict(torch.load(best_model_path))
+        accuracy = float(best_model_path.split('_acc_')[-1].split('.pth')[0])
+        print(f'Model loaded successfully: {os.path.basename(best_model_path)}')
+        print(f'Model accuracy: {accuracy}%')
     else:
-        raise FileNotFoundError('Model file not found.')
+        raise FileNotFoundError('No suitable model file found.')
 except FileNotFoundError as e:
     print(str(e))
     print("Please train the model first.")
 except Exception as e:
     print(f"An error occurred: {str(e)}")
+
 
 prev = 0
 
