@@ -1,5 +1,6 @@
 import os
 import glob
+import logging
 from Machine_Learning_Pipeline import constant_variables as constant
 
 def find_best_model():
@@ -14,4 +15,6 @@ def find_best_model():
     best_model = max(model_files, key=extract_accuracy)
     return best_model
 
-# Add other utility functions here as needed
+def setup_logging():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    return logging.getLogger(__name__)
