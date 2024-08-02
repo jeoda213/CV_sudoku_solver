@@ -8,7 +8,23 @@ from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def test_model(model, test_loader, device):
+def test_model(model: nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device) -> tuple[float, float]:
+    """
+    Evaluate the model on the test dataset and generate performance metrics.
+
+    Args:
+        model (nn.Module): The trained neural network model to evaluate.
+        test_loader (torch.utils.data.DataLoader): DataLoader containing the test dataset.
+        device (torch.device): The device (CPU or CUDA) on which to run the evaluation.
+
+    Returns:
+        tuple[float, float]: A tuple containing:
+            - accuracy (float): The test accuracy as a percentage.
+            - avg_loss (float): The average test loss.
+
+    This function also prints detailed test results, including a classification report
+    and displays a confusion matrix plot.
+    """
     model.eval()  # Set the model to evaluation mode
     criterion = nn.CrossEntropyLoss()
     
@@ -62,7 +78,21 @@ import os
 import torch
 import constant_variables as constant
 
-def save_model(test_accuracy, trained_model):
+def save_model(test_accuracy: float, trained_model: nn.Module) -> None:
+    """
+    Save the trained model if its accuracy exceeds a threshold.
+
+    Args:
+        test_accuracy (float): The test accuracy of the model as a percentage.
+        trained_model (nn.Module): The trained model to be saved.
+
+    Returns:
+        None
+
+    The model is saved only if the test_accuracy is greater than 98%. The saved model's
+    filename includes the achieved accuracy. If the accuracy is below the threshold,
+    the model is not saved and a message is printed.
+    """
     # Save the model if accuracy is higher than 98%
     if test_accuracy > 98.0:
         # Ensure the directory exists

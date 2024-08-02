@@ -7,7 +7,21 @@ import matplotlib.pyplot as plt
 import torch.optim as optim
 import torch.nn as nn
 
-def plot_metrics(train_metric, val_metric, metric_name):
+def plot_metrics(train_metric: list, val_metric: list, metric_name: str) -> None:
+    """
+    Plot training and validation metrics over epochs.
+
+    Args:
+        train_metric (list): List of training metric values for each epoch.
+        val_metric (list): List of validation metric values for each epoch.
+        metric_name (str): Name of the metric being plotted (e.g., 'Loss' or 'Accuracy').
+
+    Returns:
+        None
+
+    This function creates and displays a plot showing the training and validation
+    metrics over the course of training.
+    """
     plt.figure(figsize=(10, 5))
     plt.plot(train_metric, label=f'Training {metric_name}')
     plt.plot(val_metric, label=f'Validation {metric_name}')
@@ -17,9 +31,28 @@ def plot_metrics(train_metric, val_metric, metric_name):
     plt.legend()
     plt.show()
 
+def train_model(model: nn.Module, train_loader: torch.utils.data.DataLoader, 
+                val_loader: torch.utils.data.DataLoader, optimizer: torch.optim.Optimizer, 
+                device: torch.device, num_epochs: int = 5, learning_rate: float = 0.001) -> nn.Module:
+    """
+    Train a neural network model.
 
+    Args:
+        model (nn.Module): The neural network model to train.
+        train_loader (torch.utils.data.DataLoader): DataLoader for the training dataset.
+        val_loader (torch.utils.data.DataLoader): DataLoader for the validation dataset.
+        optimizer (torch.optim.Optimizer): The optimizer to use for training.
+        device (torch.device): The device (CPU or CUDA) to use for training.
+        num_epochs (int, optional): Number of epochs to train for. Defaults to 5.
+        learning_rate (float, optional): Learning rate for the optimizer. Defaults to 0.001.
 
-def train_model(model, train_loader, val_loader, optimizer, device, num_epochs=5, learning_rate=0.001):
+    Returns:
+        nn.Module: The trained model.
+
+    This function trains the model on the provided training data, validates it on the
+    validation data, and prints progress and metrics throughout the training process.
+    It also plots the training and validation loss and accuracy after training.
+    """
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
 

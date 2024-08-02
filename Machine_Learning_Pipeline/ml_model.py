@@ -4,7 +4,31 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class SimpleCNN(nn.Module):
+    """
+    A simple Convolutional Neural Network (CNN) for image classification.
+
+    This CNN architecture consists of three convolutional layers followed by
+    three fully connected layers. It includes batch normalization after each layer
+    and dropout for regularization.
+
+    The network is designed to classify 9 different classes (digits 1-9).
+    """
     def __init__(self):
+        """
+        Initialize the layers of the CNN.
+
+        The network structure is as follows:
+        1. Convolutional layer (1 -> 16 channels)
+        2. Convolutional layer (16 -> 32 channels)
+        3. Convolutional layer (32 -> 64 channels)
+        4. Fully connected layer (3072 -> 256 neurons)
+        5. Fully connected layer (256 -> 64 neurons)
+        6. Output layer (64 -> 9 neurons)
+
+        Each convolutional and fully connected layer (except the output) is followed by
+        batch normalization and ReLU activation. Dropout is applied after the first two
+        fully connected layers.
+        """
         super(SimpleCNN, self).__init__()
         
         # First convolutional layer
@@ -56,6 +80,15 @@ class SimpleCNN(nn.Module):
         self.dropout = nn.Dropout(0.3)
 
     def forward(self, x):
+        """
+        Define the forward pass of the CNN.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, 1, height, width)
+
+        Returns:
+            torch.Tensor: Output tensor of shape (batch_size, 9)
+        """
         # First convolutional block
         x = self.conv1(x)
         x = self.bn1(x)
@@ -97,6 +130,12 @@ class SimpleCNN(nn.Module):
         return x
 
     def l2_regularization(self):
+        """
+        Calculate the L2 regularization term for all parameters of the model.
+
+        Returns:
+            torch.Tensor: The sum of L2 norms of all parameter tensors.
+        """
         # Initialize the regularization term
         l2_reg = torch.tensor(0., requires_grad=True)
         

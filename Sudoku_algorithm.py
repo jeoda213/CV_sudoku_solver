@@ -1,7 +1,7 @@
 import time
 import numpy as np
-
 from itertools import product
+from typing import List 
 
 '''
 This solver was taken from https://www.cs.mcgill.ca/~aassaf9/python/sudoku.txt under the GNU General Public License.
@@ -10,7 +10,19 @@ raise an exception.
 '''
 
 
-def solve_sudoku(size, grid):
+def solve_sudoku(size: tuple, grid: list) -> list:
+    """
+    Solve a Sudoku puzzle using the exact cover algorithm.
+
+    Args:
+        size (tuple of int): The size of the Sudoku grid as (rows, columns). 
+                             For a standard 9x9 Sudoku, this would be (3, 3).
+        grid (list of lists of int): The initial Sudoku grid as a 2D list. 
+                                     Empty cells should be represented by 0.
+
+    Yields:
+        list of lists of int: The solved Sudoku grid. Each sublist represents a row.
+    """
     R, C = size
     N = R * C
     X = ([("rc", rc) for rc in product(range(N), range(N))] +
@@ -37,7 +49,19 @@ def solve_sudoku(size, grid):
         yield grid
 
 
-def exact_cover(X, Y):
+def exact_cover(X: list, Y: dict) -> tuple:
+    """
+    Create the exact cover problem representation.
+
+    Args:
+        X (list): The set of elements to cover, represented as a list of strings or tuples.
+        Y (dict): The collection of subsets of X. Keys are (row, column, number) tuples,
+                  values are lists of constraints.
+
+    Returns:
+        tuple: The exact cover problem as (X, Y), where X is now a dict and Y remains unchanged.
+               X's keys are the original elements, values are sets of rows that cover the element.
+    """
     X = {j: set() for j in X}
     for i, row in Y.items():
         for j in row:
@@ -45,7 +69,20 @@ def exact_cover(X, Y):
     return X, Y
 
 
-def solve(X, Y, solution):
+def solve(X: dict, Y: dict, solution: list) -> list:
+    """
+    Solve the exact cover problem using recursive backtracking.
+
+    Args:
+        X (dict): The remaining elements to be covered. Keys are constraints, 
+                  values are sets of rows that satisfy the constraint.
+        Y (dict): The remaining subsets. Keys are (row, column, number) tuples,
+                  values are lists of constraints satisfied by this tuple.
+        solution (list): The current partial solution, as a list of (row, column, number) tuples.
+
+    Yields:
+        list: Complete solutions to the exact cover problem, each a list of (row, column, number) tuples.
+    """
     if not X:
         yield list(solution)
     else:
@@ -59,7 +96,18 @@ def solve(X, Y, solution):
             solution.pop()
 
 
-def select(X, Y, r):
+def select(X: dict, Y: dict, r: tuple) -> list:
+    """
+    Select a row and update the problem accordingly.
+
+    Args:
+        X (dict): The remaining elements to be covered.
+        Y (dict): The remaining subsets.
+        r (tuple): The row to select, as a (row, column, number) tuple.
+
+    Returns:
+        list: The columns removed during selection, each a set of rows.
+    """
     cols = []
     for j in Y[r]:
         for i in X[j]:
@@ -70,7 +118,19 @@ def select(X, Y, r):
     return cols
 
 
-def deselect(X, Y, r, cols):
+def deselect(X: dict, Y: dict, r: tuple, cols: list) -> None:
+    """
+    Deselect a row and restore the problem to its previous state.
+
+    Args:
+        X (dict): The remaining elements to be covered.
+        Y (dict): The remaining subsets.
+        r (tuple): The row to deselect, as a (row, column, number) tuple.
+        cols (list): The columns removed during selection, each a set of rows.
+
+    Returns:
+        None
+    """
     for j in reversed(Y[r]):
         X[j] = cols.pop()
         for i in X[j]:
@@ -79,7 +139,23 @@ def deselect(X, Y, r, cols):
                     X[k].add(i)
 
 
-def solve_wrapper(squares_num_array):
+def solve_wrapper(squares_num_array: str) -> tuple:
+    """
+    Wrapper function to solve a Sudoku puzzle.
+
+    Args:
+        squares_num_array (str): A string representation of the Sudoku puzzle,
+                                 where '0' represents empty cells. The string
+                                 should be 81 characters long for a 9x9 grid.
+
+    Returns:
+        tuple: (solved_puzzle, solve_time)
+               solved_puzzle (str or None): A string representation of the solved Sudoku,
+                                            or None if unsolvable. The string is 81 characters
+                                            long, representing the grid row by row.
+               solve_time (str or None): A string indicating the time taken to solve
+                                         (e.g., "Solved in 0.1234s"), or None if unsolvable.
+    """
     if squares_num_array.count('0') >= 80:
         return None, None
 
